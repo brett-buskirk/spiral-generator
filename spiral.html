@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Spiral</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      position: relative;
+      background-color: #333;
+      overflow: hidden;
+    }
+    button {
+      font-size: 20px;
+      padding: 8px;
+      border-radius: 15px;
+      border: none;
+      background: linear-gradient(to top, red, orange, yellow, orange, red);
+      width: 150px;
+      transition: .4s;
+      margin: 5px;
+    }
+    button:hover {
+      cursor: pointer;
+      transform: scale(1.07);
+    }
+    div {
+      position: absolute;
+      background: radial-gradient(circle, yellow, red);
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+    }
+    section {
+      display: block;
+      margin-top: 10px;
+    }
+    label {
+      color: whitesmoke;
+    }
+    input {
+      width: 75px;
+      font-size: 15px;
+    }
+    p {
+      color: whitesmoke;
+    }
+    #restart {
+      position: absolute;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+  <section id="controls">
+    <button type="button" id="custom">Custom-Spiral</button>
+    <button type="button" id="single">Single Spiral</button>
+    <button type="button" id="multi">Multi-Spiral</button>
+    <button type="button" id="vortex">Vortex-Spiral</button>
+    <section id="num-1">
+      <label for="num">Number: &nbsp;&nbsp;</label>
+      <input type="number" name="num" id="num" value="0.2">
+    </section>
+    <section id="num-2">
+      <label for="inc">Increment: </label>
+      <input type="number" name="inc" id="inc" value="0.2">
+    </section>
+    <p id="note">NOTE: Smaller (decimal) numbers make for tighter spirals!</p>
+  </section>
+
+  <script>
+    function removeControls() {
+      let elControls = document.getElementById('controls');
+      elControls.parentNode.removeChild(elControls);
+      addStop();
+    }
+
+    function archimedeanSpiral(num, inc) {
+      let winLeft = window.innerWidth / 2;
+      let winTop = window.innerHeight / 2;
+      for (let i = 1; i < 1000; i += inc) {
+        setTimeout(() => {
+          let deg = (i - num)/ num;
+          let x = i * Math.cos(deg);
+          let y = i * Math.sin(deg);
+          let newDiv = document.createElement('div');
+          newDiv.style.left = Math.round(x) + winLeft + 'px';
+          newDiv.style.top = Math.round(y) + winTop + 'px';
+          document.body.append(newDiv);
+        }, 10 * i);
+      }
+    }
+
+    function createVortexSpiral() {
+      removeControls();
+      archimedeanSpiral(0.05, 0.5);
+    }
+
+    function createMultiSpiral() {
+      removeControls();
+      archimedeanSpiral(0.2, 1);
+    }
+    
+    function createSingleSpiral() {
+      removeControls();
+      archimedeanSpiral(0.08, 0.5);
+    }
+
+    function createCustomSpiral() {
+      let elInc = document.getElementById('inc');
+      let elNum = document.getElementById('num');
+      const val1 = Math.abs(Number(elInc.value)) || 0.2;
+      const val2 = Number(elNum.value) || 0.2;
+      removeControls();
+      archimedeanSpiral(val2, val1);
+    }
+
+    function addStop() {
+      let btn = document.createElement('button');
+      btn.setAttribute('id', 'restart');
+      let btnText = document.createTextNode('RESTART');
+      btn.appendChild(btnText);
+      document.body.append(btn);
+      btn.addEventListener('click', function(){location.reload()}, false);
+    }
+
+    document.getElementById('single').addEventListener('click', createSingleSpiral, false);
+    document.getElementById('multi').addEventListener('click', createMultiSpiral, false);
+    document.getElementById('vortex').addEventListener('click', createVortexSpiral, false);
+    document.getElementById('custom').addEventListener('click', createCustomSpiral, false);
+  </script>
+</body>
+</html>
